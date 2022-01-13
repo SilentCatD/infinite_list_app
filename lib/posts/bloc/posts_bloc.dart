@@ -10,6 +10,7 @@ part 'posts_state.dart';
 
 class PostsBloc extends Bloc<PostsEvent, PostsState> {
   late final PostsRepository _postsRepository;
+  int _lastIndex = 0;
 
   PostsBloc(PostsRepository postsRepository) : super(PostsInitial()) {
     _postsRepository = postsRepository;
@@ -18,5 +19,18 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     );
   }
 
-  void _onPostFetchRequested(PostFetchRequested event, Emitter emit) async {}
+  void _onPostFetchRequested(PostFetchRequested event, Emitter emit) async {
+    try {
+      if (state is PostFetchComplete) {
+        emit(PostFetchInProgress((state as PostFetchComplete).posts));
+      } else {
+        emit(PostFetchInProgress(const []));
+      }
+      final posts = await _postsRepository.fetchPosts(_lastIndex);
+      _lastIndex = posts.length;
+      emit(PostFetchComplete(posts));
+    } catch (e) {
+      emit(PostFetchFailure());
+    }
+  }
 }
