@@ -13,7 +13,7 @@ class PostsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final postsRepository = PostsRepository(PostsAPI());
     return BlocProvider(
-      create: (context) => PostsBloc(postsRepository),
+      create: (context) => PostsBloc(postsRepository)..add(PostFetchRequested()),
       child: const PostsView(),
     );
   }

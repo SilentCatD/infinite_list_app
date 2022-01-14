@@ -16,4 +16,7 @@ class PostFetchComplete extends PostsState{
   PostFetchComplete(this.posts, this.hasPostsLeft);
 }
 
-class PostFetchFailure extends PostsState{}
+class PostFetchFailure extends PostsState{
+  final String message;
+  PostFetchFailure(this.message);
+}

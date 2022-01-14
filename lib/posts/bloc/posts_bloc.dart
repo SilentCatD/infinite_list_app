@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -16,6 +17,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     _postsRepository = postsRepository;
     on<PostFetchRequested>(
       _onPostFetchRequested,
+      transformer: droppable(),
     );
   }
 
@@ -35,13 +37,14 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
       } else {
         hasLeft = true;
       }
-      final currentPosts = (state as PostFetchInProgress).posts;
+      final currentPosts = List<Post>.from((state as PostFetchInProgress).posts);
       currentPosts.addAll(fetchedPosts);
       _lastIndex = currentPosts.length;
 
       emit(PostFetchComplete(currentPosts, hasLeft));
     } catch (e) {
-      emit(PostFetchFailure());
+      emit(PostFetchFailure(e.toString()));
+      rethrow;
     }
   }
 }
