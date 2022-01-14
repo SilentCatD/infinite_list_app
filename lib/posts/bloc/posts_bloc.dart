@@ -22,13 +22,24 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
   void _onPostFetchRequested(PostFetchRequested event, Emitter emit) async {
     try {
       if (state is PostFetchComplete) {
+        /// static list
+        if (!(state as PostFetchComplete).hasPostsLeft) return;
         emit(PostFetchInProgress((state as PostFetchComplete).posts));
       } else {
         emit(PostFetchInProgress(const []));
       }
-      final posts = await _postsRepository.fetchPosts(_lastIndex);
-      _lastIndex = posts.length;
-      emit(PostFetchComplete(posts));
+      late bool hasLeft;
+      final fetchedPosts = await _postsRepository.fetchPosts(_lastIndex);
+      if (fetchedPosts.length < _postsRepository.limit) {
+        hasLeft = false;
+      } else {
+        hasLeft = true;
+      }
+      final currentPosts = (state as PostFetchInProgress).posts;
+      currentPosts.addAll(fetchedPosts);
+      _lastIndex = currentPosts.length;
+
+      emit(PostFetchComplete(currentPosts, hasLeft));
     } catch (e) {
       emit(PostFetchFailure());
     }

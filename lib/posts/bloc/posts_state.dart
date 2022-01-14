@@ -12,7 +12,8 @@ class PostFetchInProgress extends PostsState{
 
 class PostFetchComplete extends PostsState{
   final List<Post> posts;
-  PostFetchComplete(this.posts);
+  final bool hasPostsLeft;
+  PostFetchComplete(this.posts, this.hasPostsLeft);
 }
 
 class PostFetchFailure extends PostsState{}

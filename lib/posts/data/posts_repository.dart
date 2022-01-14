@@ -19,13 +19,7 @@ class PostsRepository {
   Future<List<Post>> fetchPosts([int startIndex = 0]) async {
     try {
       final rawData = await _postsAPI.fetchPosts(startIndex, limit);
-      return rawData
-          .map((e) => Post(
-              title: e['title'],
-              body: e['body'],
-              userId: e['userId'],
-              postId: e['id']))
-          .toList();
+      return rawData.map((e) => Post.fromMap(e)).toList();
     } catch (e) {
       rethrow;
     }

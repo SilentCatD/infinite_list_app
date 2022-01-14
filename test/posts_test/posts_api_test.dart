@@ -17,5 +17,14 @@ void main() {
       expect(results, isA<List<Map<String, dynamic>>>());
     });
 
+    test("type of each element in Map<String, dynamic>", () async {
+      final results = await postsAPI.fetchPosts(0, 1);
+      final oneElement = results.first;
+      expect(oneElement, containsPair('title', isA<String>()));
+      expect(oneElement, containsPair('body', isA<String>()));
+      expect(oneElement, containsPair('userId', isA<int>()));
+      expect(oneElement, containsPair('id', isA<int>()));
+    });
+
   });
 }
