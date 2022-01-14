@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../data/post_model.dart';
 
 class PostItemView extends StatelessWidget {
@@ -16,7 +17,6 @@ class PostItemView extends StatelessWidget {
           Text(post.postId.toString()),
           Text(post.title),
           Text(post.body),
-
         ],
       ),
     );
